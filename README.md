@@ -8,7 +8,7 @@ A CLI tool for managing Jenkins job configurations: bulk update, backup, and res
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'leeroy_jenkins', git: 'https://github.com/Jellyvision/leeroy_jenkins.git'
+gem 'leeroy_jenkins'
 ```
 
 And then execute:
@@ -17,10 +17,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ git clone https://github.com/Jellyvision/leeroy_jenkins.git
-    $ cd leeroy_jenkins
-	$ bundle install
-	$ bundle exec rake install
+    $ gem install leeroy_jenkins
 
 ## Usage
 
