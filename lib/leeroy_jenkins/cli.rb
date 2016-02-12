@@ -13,6 +13,7 @@ module LeeroyJenkins
     option :xpath,     required: false, type: :string,  desc: 'XPath of node(s) to modify in the config.xml of the specified job(s)', default: '/'
     option :dry_run,                    type: :boolean, desc: 'Write XML to STDOUT instead of to Jenkins', default: true
     option :at_xpath,  required: false, type: :string,  desc: 'Replace, append to, or delete the XML node(s) specified by the given XPath', enum: ['replace', 'append', 'delete'], default: 'replace'
+    option :jobs,      required: false, type: :string,  desc: 'Path to a file containing a job name on each line'
     def update_config
       raw_xml_string = File.read options[:new_xml]
       if error = LeeroyJenkins.invalid_xml_document?(raw_xml_string)
@@ -20,9 +21,16 @@ module LeeroyJenkins
         exit 1
       end
 
-      jenkins_client = build_jenkins_client options
+      jenkins_client = build_jenkins_client(options)
 
-      job_names_to_update = JobFinder.new(options[:job_regex], jenkins_client).find_jobs
+      job_rows =
+        if options[:jobs]
+          File.read(options[:jobs]).split("\n")
+        else
+          nil
+        end
+
+      job_names_to_update = JobFinder.new(jenkins_client).find_jobs(options[:job_regex], job_rows)
       job_updater = JobUpdater.new job_names_to_update, raw_xml_string, jenkins_client, options[:xpath], options[:at_xpath], options[:threads]
       result = options[:dry_run] ? job_updater.dry_run : job_updater.update_jobs!
 
@@ -44,7 +52,7 @@ module LeeroyJenkins
     option :backup_dir, required: true,  type: :string, desc: 'Path to the directory to save the config.xml file to, created if it does not exist'
     def backup
       jenkins_client = build_jenkins_client options
-      job_names_to_backup = JobFinder.new(options[:job_regex], jenkins_client).find_jobs
+      job_names_to_backup = JobFinder.new(jenkins_client).find_jobs(options[:job_regex])
       JobBackupper.new(job_names_to_backup, jenkins_client, options[:backup_dir], options[:threads]).backup
     end
 
