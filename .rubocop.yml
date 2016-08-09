@@ -1,10 +1,11 @@
+inherit_from: .rubocop_todo.yml
+
 Style/WordArray:
   Enabled: false
 
 Metrics/LineLength:
   Exclude:
     - 'lib/leeroy_jenkins/cli.rb'
-  Max: 90
 
 Metrics/AbcSize:
   Max: 30
