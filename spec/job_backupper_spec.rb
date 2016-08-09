@@ -17,10 +17,10 @@ describe LeeroyJenkins::JobBackupper do
     allow(job_client).to receive(:get_config).with('job_3').and_return(job_3_config)
   end
 
-  describe '#get_job_configs' do
+  describe '#job_configs' do
     context 'with 3 job names' do
       it 'returns a hash of job names and their config.xml' do
-        expect(job_backupper.get_job_configs).to eql('job_1' => job_1_config, 'job_2' => job_2_config, 'job_3' => job_3_config)
+        expect(job_backupper.job_configs).to eql('job_1' => job_1_config, 'job_2' => job_2_config, 'job_3' => job_3_config)
       end
     end
   end
@@ -34,7 +34,7 @@ describe LeeroyJenkins::JobBackupper do
 
     context 'backup_dir does not exist' do
       before do
-        allow(Dir).to receive(:exists?).with(backup_dir).and_return(false)
+        allow(Dir).to receive(:exist?).with(backup_dir).and_return(false)
         expect(FileUtils).to receive(:mkdir_p).with(backup_dir)
       end
 

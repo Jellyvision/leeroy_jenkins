@@ -31,5 +31,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'pry', '~> 0.10.1'
   spec.add_development_dependency 'pry-doc', '~> 0.8.0'
   spec.add_development_dependency 'pry-stack_explorer', '~> 0.4.9'
-  spec.add_development_dependency 'rubocop', '~> 0.37.2'
+  spec.add_development_dependency 'rubocop', '~> 0.42.0'
 end

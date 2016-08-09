@@ -9,7 +9,7 @@ module LeeroyJenkins
       @threads = threads
     end
 
-    def get_job_configs
+    def job_configs
       pairs = map_job_configs do |job_name, job_config|
         [job_name, job_config]
       end
@@ -18,9 +18,7 @@ module LeeroyJenkins
     end
 
     def backup
-      unless Dir.exists? backup_dir
-        FileUtils.mkdir_p backup_dir
-      end
+      FileUtils.mkdir_p(backup_dir) unless Dir.exist?(backup_dir)
 
       map_job_configs do |job_name, job_config|
         File.write "#{backup_dir}/#{job_name}.xml", job_config
@@ -29,12 +27,11 @@ module LeeroyJenkins
 
     private
 
-    def map_job_configs &block
+    def map_job_configs
       Parallel.map(job_names_to_backup, in_threads: threads) do |job_name|
         job_config = jenkins_client.job.get_config job_name
         yield job_name, job_config
       end
     end
-
   end
 end

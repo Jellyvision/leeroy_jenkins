@@ -15,43 +15,26 @@ module LeeroyJenkins
     option :at_xpath,  required: false, type: :string,  desc: 'Replace, append to, or delete the XML node(s) specified by the given XPath', enum: ['replace', 'append', 'delete'], default: 'replace'
     option :jobs,      required: false, type: :string,  desc: 'Path to a file containing a job name on each line'
     def update_config
-      raw_xml_string = File.read options[:new_xml]
-      if error = LeeroyJenkins.invalid_xml_document?(raw_xml_string)
-        error "#{options[:new_xml]}} is not well-formed XML: #{error}"
-        exit 1
-      end
+      raw_xml_string = File.read(options[:new_xml])
+      xml_parse_error = LeeroyJenkins.invalid_xml_document?(raw_xml_string)
+
+      die("#{options[:new_xml]}} does not contain well-formed XML: #{xml_parse_error}") if xml_parse_error
 
       jenkins_client = build_jenkins_client(options)
+      job_rows = options[:jobs] ? File.read(options[:jobs]).split("\n") : []
+      job_names_to_update = job_names(jenkins_client, options, job_rows)
 
-      job_rows =
-        if options[:jobs]
-          File.read(options[:jobs]).split("\n")
-        else
-          nil
-        end
+      job_updater = JobUpdater.new(job_names_to_update, raw_xml_string, jenkins_client, options[:xpath], options[:at_xpath], options[:threads])
+      result = job_updater.update_jobs(options[:dry_run])
 
-      job_names_to_update = JobFinder.new(jenkins_client).find_jobs(options[:job_regex], job_rows)
-      job_updater = JobUpdater.new job_names_to_update, raw_xml_string, jenkins_client, options[:xpath], options[:at_xpath], options[:threads]
-      result = options[:dry_run] ? job_updater.dry_run : job_updater.update_jobs!
-
-      if options[:dry_run]
-        result.each do |key, value|
-          puts "#{key}:"
-          puts
-          puts value
-        end
-      else
-        result.each do |key, value|
-          puts "#{key}: #{value}"
-        end
-      end
+      puts result
     end
 
     desc 'backup', 'Save the config.xml of Jenkins jobs to disk'
     option :job_regex,  required: false, type: :string, desc: 'Regular expression to select jobs by name', default: '.*'
     option :backup_dir, required: true,  type: :string, desc: 'Path to the directory to save the config.xml file to, created if it does not exist'
     def backup
-      jenkins_client = build_jenkins_client options
+      jenkins_client = build_jenkins_client(options)
       job_names_to_backup = JobFinder.new(jenkins_client).find_jobs(options[:job_regex])
       JobBackupper.new(job_names_to_backup, jenkins_client, options[:backup_dir], options[:threads]).backup
     end
@@ -60,26 +43,16 @@ module LeeroyJenkins
     option :backup_dir, required: true, type: :string,  desc: 'Path to the directory where config.xml files were backed up'
     option :dry_run,                    type: :boolean, desc: 'Write XML to STDOUT instead of to Jenkins', default: true
     def restore
-      jenkins_client = build_jenkins_client options
-      job_restorer = JobRestorer.new jenkins_client, options[:backup_dir], options[:threads]
+      jenkins_client = build_jenkins_client(options)
+      job_restorer = JobRestorer.new(jenkins_client, options[:backup_dir], options[:threads])
       result = options[:dry_run] ? job_restorer.dry_run : job_restorer.restore!
 
-      if options[:dry_run]
-        result.each do |key, value|
-          puts "#{key}:"
-          puts
-          puts value
-        end
-      else
-        result.each do |key, value|
-          puts "#{key}: #{value}"
-        end
-      end
+      puts result
     end
 
     private
 
-    def build_jenkins_client options
+    def build_jenkins_client(options)
       JenkinsClientBuilder.new(
         server_url: options[:server_url],
         username: options[:username],
@@ -89,5 +62,13 @@ module LeeroyJenkins
       ).build
     end
 
+    def job_names(jenkins_client, options, job_rows)
+      JobFinder.new(jenkins_client).find_jobs(options[:job_regex], job_rows)
+    end
+
+    def die(error_message)
+      error error_message
+      exit 1
+    end
   end
 end

@@ -1,0 +1,19 @@
+Style/WordArray:
+  Enabled: false
+
+Metrics/LineLength:
+  Exclude:
+    - 'lib/leeroy_jenkins/cli.rb'
+  Max: 90
+
+Metrics/AbcSize:
+  Max: 30
+
+Metrics/MethodLength:
+  Max: 20
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/ParameterLists:
+  Max: 6
