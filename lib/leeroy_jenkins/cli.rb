@@ -17,14 +17,9 @@ module LeeroyJenkins
     def update_config
       raw_xml_string = File.read(options[:new_xml])
       xml_parse_error = LeeroyJenkins.invalid_xml_document?(raw_xml_string)
-
       die("#{options[:new_xml]}} does not contain well-formed XML: #{xml_parse_error}") if xml_parse_error
 
-      jenkins_client = build_jenkins_client(options)
-      job_rows = options[:jobs] ? File.read(options[:jobs]).split("\n") : []
-      job_names_to_update = job_names(jenkins_client, options, job_rows)
-
-      job_updater = JobUpdater.new(job_names_to_update, raw_xml_string, jenkins_client, options[:xpath], options[:at_xpath], options[:threads])
+      job_updater = JobUpdater.new(job_names, raw_xml_string, jenkins_client, options[:xpath], options[:at_xpath], options[:threads])
       result = job_updater.update_jobs(options[:dry_run])
 
       puts result
@@ -34,16 +29,13 @@ module LeeroyJenkins
     option :job_regex,  required: false, type: :string, desc: 'Regular expression to select jobs by name', default: '.*'
     option :backup_dir, required: true,  type: :string, desc: 'Path to the directory to save the config.xml file to, created if it does not exist'
     def backup
-      jenkins_client = build_jenkins_client(options)
-      job_names_to_backup = JobFinder.new(jenkins_client).find_jobs(options[:job_regex])
-      JobBackupper.new(job_names_to_backup, jenkins_client, options[:backup_dir], options[:threads]).backup
+      JobBackupper.new(job_names, jenkins_client, options[:backup_dir], options[:threads]).backup
     end
 
     desc 'restore', 'Restore config.xml files to Jenkins jobs from backups'
     option :backup_dir, required: true, type: :string,  desc: 'Path to the directory where config.xml files were backed up'
     option :dry_run,                    type: :boolean, desc: 'Write XML to STDOUT instead of to Jenkins', default: true
     def restore
-      jenkins_client = build_jenkins_client(options)
       job_restorer = JobRestorer.new(jenkins_client, options[:backup_dir], options[:threads])
       result = options[:dry_run] ? job_restorer.dry_run : job_restorer.restore!
 
@@ -52,8 +44,8 @@ module LeeroyJenkins
 
     private
 
-    def build_jenkins_client(options)
-      JenkinsClientBuilder.new(
+    def jenkins_client
+      @jenkins_client ||= JenkinsClientBuilder.new(
         server_url: options[:server_url],
         username: options[:username],
         password: options[:password],
@@ -62,8 +54,9 @@ module LeeroyJenkins
       ).build
     end
 
-    def job_names(jenkins_client, options, job_rows)
-      JobFinder.new(jenkins_client).find_jobs(options[:job_regex], job_rows)
+    def job_names
+      @job_rows ||= options[:jobs] ? File.read(options[:jobs]).split("\n") : []
+      @job_names ||= JobFinder.new(jenkins_client).find_jobs(options[:job_regex], @job_rows)
     end
 
     def die(error_message)
