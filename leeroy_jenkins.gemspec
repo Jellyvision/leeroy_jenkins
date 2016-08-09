@@ -19,17 +19,18 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'jenkins_api_client', '~> 1.4'
-  spec.add_dependency 'thor', '~> 0.19.1'
   spec.add_dependency 'nokogiri', '~> 1.6'
   spec.add_dependency 'parallel', '~> 1.6'
+  spec.add_dependency 'thor', '~> 0.19.1'
 
-  spec.add_development_dependency 'bundler', '~> 1.10'
-  spec.add_development_dependency 'rake', '~> 10.0'
-  spec.add_development_dependency 'rspec', '~> 3.3'
   spec.add_development_dependency 'aruba', '~> 0.9.0'
+  spec.add_development_dependency 'bundler', '~> 1.10'
   spec.add_development_dependency 'cucumber', '~> 2.1'
   spec.add_development_dependency 'pry', '~> 0.10.1'
   spec.add_development_dependency 'pry-doc', '~> 0.8.0'
   spec.add_development_dependency 'pry-stack_explorer', '~> 0.4.9'
+  spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'rspec', '~> 3.3'
   spec.add_development_dependency 'rubocop', '~> 0.42.0'
+  spec.add_development_dependency 'simplecov', '~> 0.12.0'
 end
