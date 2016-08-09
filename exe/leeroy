@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-require "leeroy_jenkins"
+require 'leeroy_jenkins'
 
 LeeroyJenkins::Cli.start ARGV

@@ -13,6 +13,6 @@ Then /^the "([^"]*)" job's configuration should match "([^"]*)"$/ do |job_name, 
   expect(actual_xml).to eql(expected_xml)
 end
 
-def format_xml xml
+def format_xml(xml)
   Nokogiri.XML(xml, &:noblanks).canonicalize
 end

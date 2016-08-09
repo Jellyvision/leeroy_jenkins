@@ -3,6 +3,10 @@ inherit_from: .rubocop_todo.yml
 Style/WordArray:
   Enabled: false
 
+Style/HashSyntax:
+  Exclude:
+    - 'Rakefile'
+
 Metrics/LineLength:
   Exclude:
     - 'lib/leeroy_jenkins/cli.rb'
