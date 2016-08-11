@@ -48,19 +48,6 @@ Scenario: Removing a shell task from a job
   When I successfully run `leeroy update-config --job-regex cat --new-xml default_config.xml --no-dry-run --server-url http://192.168.50.33:8080 --xpath "//command[text()='echo meow']/.." --at-xpath delete`
   Then the "cat" job's configuration should match "default_config.xml"
 
-Scenario: Adding a build step to a job
-  Given the job "cat" exists with configuration from "cat_config.xml"
-  And the file "new_build_step.xml" with:
-    """
-    <hudson.tasks.Shell>
-        <command>echo &apos;Im tired&apos;
-    sleep 10
-    echo &apos;Im hungry&apos;</command>
-    </hudson.tasks.Shell>
-    """
-  When I successfully run `leeroy update-config --job-regex cat --new-xml new_build_step.xml --no-dry-run --server-url http://192.168.50.33:8080 --at-xpath append --xpath '/project/builders'`
-  Then the "cat" job's configuration should match "sleepy_cat_config.xml"
-
 Scenario: Overwritting jobs' config.xml by providing a list of job names
   Given the job "cat" exists with configuration from "cat_config.xml"
   And the job "dog" exists with configuration from "dog_config.xml"
