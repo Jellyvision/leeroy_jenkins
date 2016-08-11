@@ -13,7 +13,7 @@ Background:
 Scenario: Backing up a job's config.xml
   Given the job "cat" exists with configuration from "cat_config.xml"
   And the job "dog" exists with configuration from "dog_config.xml"
-  When I successfully run `leeroy backup --job-regex cat --backup-dir foo/bar/backups`
+  When I successfully run `leeroy backup foo/bar/backups --job-regex cat`
   Then the "cat" job's configuration should match "foo/bar/backups/cat.xml"
   And the file "foo/bar/backups/dog.xml" should not exist
 
@@ -21,7 +21,7 @@ Scenario: Backing up all jobs' config.xml
   Given the job "cat" exists with configuration from "cat_config.xml"
   And the job "dog" exists with configuration from "dog_config.xml"
   And the job "default" exists with configuration from "default_config.xml"
-  When I successfully run `leeroy backup --backup-dir my/backup/configs`
+  When I successfully run `leeroy backup my/backup/configs`
   Then the "cat" job's configuration should match "my/backup/configs/cat.xml"
   And the "dog" job's configuration should match "my/backup/configs/dog.xml"
   And the "default" job's configuration should match "my/backup/configs/default.xml"
