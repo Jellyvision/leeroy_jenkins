@@ -48,11 +48,11 @@ module LeeroyJenkins
 
       elements_to_modify.each do |node|
         case at_xpath
-        when 'replace'
+        when :replace
           node.replace element_to_insert
-        when 'append'
+        when :append
           node << element_to_insert
-        when 'delete'
+        when :delete
           node.remove
         end
       end

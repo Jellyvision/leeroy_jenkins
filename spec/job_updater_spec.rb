@@ -17,8 +17,8 @@ describe LeeroyJenkins::JobUpdater do
 
   describe '#update_jobs' do
     context 'dry_run = false' do
-      context 'at_xpath = "replace"' do
-        let(:at_xpath) { 'replace' }
+      context 'at_xpath = :replace' do
+        let(:at_xpath) { :replace }
 
         context 'xpath = "/"' do
           let(:xpath) { '/' }
@@ -35,8 +35,8 @@ describe LeeroyJenkins::JobUpdater do
         end
       end
 
-      context 'at_xpath = "append"' do
-        let(:at_xpath) { 'append' }
+      context 'at_xpath = :append' do
+        let(:at_xpath) { :append }
 
         context 'xpath = "/"' do
           let(:xpath) { '/' }
@@ -53,8 +53,8 @@ describe LeeroyJenkins::JobUpdater do
         end
       end
 
-      context 'at_xpath = "delete"' do
-        let(:at_xpath) { 'delete' }
+      context 'at_xpath = :delete' do
+        let(:at_xpath) { :delete }
 
         context 'xpath = "/"' do
           let(:xpath) { '/' }
@@ -74,8 +74,8 @@ describe LeeroyJenkins::JobUpdater do
   end
 
   context 'dry = true' do
-    context 'at_xpath = "replace"' do
-      let(:at_xpath) { 'replace' }
+    context 'at_xpath = :replace' do
+      let(:at_xpath) { :replace }
 
       context 'xpath = "x/y"' do
         let(:xpath) { '/x/y' }
