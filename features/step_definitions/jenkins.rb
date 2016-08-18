@@ -14,6 +14,10 @@ Then /^the "([^"]*)" job's configuration should match "([^"]*)"$/ do |job_name, 
   expect(actual_xml).to eql(expected_xml)
 end
 
+Then /^the "([^"]*)" job should not exist$/ do |job_name|
+  expect(JENKINS_CLIENT.job.exists?(job_name)).to be false
+end
+
 def format_xml(xml)
   Nokogiri.XML(xml, &:noblanks).canonicalize
 end

@@ -50,8 +50,7 @@ module LeeroyJenkins
 
     desc 'restore BACKUP_DIR_PATH', 'Restore config.xml files to Jenkins jobs from backups'
     def restore(backup_dir)
-      # TODO: dry_run
-      job_restorer = JobRestorer.new(jenkins_client, backup_dir, options[:threads])
+      job_restorer = JobRestorer.new(jenkins_client, backup_dir, options[:threads], job_rows, options[:job_regex])
       result = options[:dry_run] ? job_restorer.dry_run : job_restorer.restore!
 
       puts result
@@ -75,8 +74,11 @@ module LeeroyJenkins
     end
 
     def job_names
-      @job_rows ||= options[:jobs] ? File.read(options[:jobs]).split("\n") : []
-      @job_names ||= JobFinder.new(jenkins_client).find_jobs(options[:job_regex], @job_rows)
+      JobFinder.new(jenkins_client).find_jobs(options[:job_regex], job_rows)
+    end
+
+    def job_rows
+      options[:jobs] ? File.read(options[:jobs]).split("\n") : []
     end
 
     def die(error_message)
