@@ -18,22 +18,14 @@ module LeeroyJenkins
 
     desc 'append NEW_NODE.xml', 'Append to XML nodes in jenkins jobs\' config.xml'
     option :xpath, type: :string, default: '/', desc: 'XPath of node(s) to modify in the config.xml of the specified job(s)'
-    def append(new_node_path)
-      raw_xml_string = File.read(new_node_path)
-      xml_parse_error = LeeroyJenkins.invalid_xml_document?(raw_xml_string)
-      die("#{new_node_path} does not contain well-formed XML: #{xml_parse_error}") if xml_parse_error
-
-      puts update_jobs(raw_xml_string, __method__)
+    def append(xml_file_path)
+      puts update_jobs(read_and_validate_xml_file(xml_file_path), __method__)
     end
 
     desc 'replace NEW_NODE.xml', 'Replace XML nodes in jenkins jobs\' config.xml'
     option :xpath, type: :string, default: '/', desc: 'XPath of node(s) to modify in the config.xml of the specified job(s)'
-    def replace(new_node_path)
-      raw_xml_string = File.read(new_node_path)
-      xml_parse_error = LeeroyJenkins.invalid_xml_document?(raw_xml_string)
-      die("#{new_node_path} does not contain well-formed XML: #{xml_parse_error}") if xml_parse_error
-
-      puts update_jobs(raw_xml_string, __method__)
+    def replace(xml_file_path)
+      puts update_jobs(read_and_validate_xml_file(xml_file_path), __method__)
     end
 
     desc 'delete', 'Delete XML nodes in jenkins jobs\' config.xml'
@@ -57,6 +49,13 @@ module LeeroyJenkins
     end
 
     private
+
+    def read_and_validate_xml_file(xml_file_path)
+      raw_xml_string = File.read(xml_file_path)
+      xml_parse_error = LeeroyJenkins.invalid_xml_document?(raw_xml_string)
+      die("#{xml_file_path} does not contain well-formed XML: #{xml_parse_error}") if xml_parse_error
+      raw_xml_string
+    end
 
     def update_jobs(raw_xml_string, command_name)
       job_updater = JobUpdater.new(job_names, raw_xml_string, jenkins_client, options[:xpath], command_name, options[:threads])
