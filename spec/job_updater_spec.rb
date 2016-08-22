@@ -71,18 +71,18 @@ describe LeeroyJenkins::JobUpdater do
         end
       end
     end
-  end
 
-  context 'dry = true' do
-    context 'at_xpath = :replace' do
-      let(:at_xpath) { :replace }
+    context 'dry = true' do
+      context 'at_xpath = :replace' do
+        let(:at_xpath) { :replace }
 
-      context 'xpath = "x/y"' do
-        let(:xpath) { '/x/y' }
-        let(:constructed_xml) { '<x><a><b>new</b></a></x>' }
+        context 'xpath = "x/y"' do
+          let(:xpath) { '/x/y' }
+          let(:constructed_xml) { '<x><a><b>new</b></a></x>' }
 
-        it 'returns a hash of job names and what their new config.xml would look like' do
-          expect(job_updater.update_jobs(true)).to eql('job_1' => constructed_xml, 'job_2' => constructed_xml, 'job_3' => constructed_xml)
+          it 'returns a hash of job names and what their new config.xml would look like' do
+            expect(job_updater.update_jobs(true)).to eql('job_1' => constructed_xml, 'job_2' => constructed_xml, 'job_3' => constructed_xml)
+          end
         end
       end
     end
