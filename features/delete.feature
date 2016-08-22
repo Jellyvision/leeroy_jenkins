@@ -13,3 +13,8 @@ Scenario: Removing a shell task from a job
   Given the job "cat" exists with configuration from "cat_config.xml"
   When I successfully run `leeroy delete --xpath "//command[text()='echo meow']/.." --job-regex cat --no-dry-run`
   Then the "cat" job's configuration should match "default_config.xml"
+
+Scenario: Dry-run
+  Given the job "cat" exists with configuration from "cat_config.xml"
+  When I successfully run `leeroy delete --xpath "//command[text()='echo meow']/.." --job-regex cat --dry-run`
+  Then the "cat" job's configuration should match "cat_config.xml"

@@ -20,6 +20,12 @@ Scenario: Creating jobs from backups
   And the "dog" job's configuration should match "backups/dog.xml"
   And the "default" job's configuration should match "backups/default.xml"
 
+Scenario: Dry-run
+  When I successfully run `leeroy restore backups --dry-run`
+  Then the "dog" job should not exist
+  And the "cat" job should not exist
+  And the "default" job should not exist
+
 Scenario: Overriding existing jobs' configurations
   Given the job "cat" exists with configuration from "backups/cat.xml"
   And the job "dog" exists with configuration from "backups/dog.xml"
