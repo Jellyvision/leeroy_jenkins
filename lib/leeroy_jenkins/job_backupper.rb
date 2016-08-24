@@ -9,29 +9,31 @@ module LeeroyJenkins
       @threads = threads
     end
 
-    def job_configs
-      pairs = map_job_configs do |job_name, job_config|
-        [job_name, job_config]
+    def backup(dry = true)
+      dry ? dry_run : backup!
+    end
+
+    private
+
+    def backup!
+      FileUtils.mkdir_p(backup_dir) unless Dir.exist?(backup_dir)
+
+      Parallel.each(job_names_to_backup, in_threads: threads) do |job_name|
+        job_config = jenkins_client.job.get_config(job_name)
+        File.write(xml_file_path(job_name), job_config)
+      end
+    end
+
+    def dry_run
+      pairs = job_names_to_backup.map do |job_name|
+        [job_name, xml_file_path(job_name)]
       end
 
       Hash[pairs]
     end
 
-    def backup
-      FileUtils.mkdir_p(backup_dir) unless Dir.exist?(backup_dir)
-
-      map_job_configs do |job_name, job_config|
-        File.write "#{backup_dir}/#{job_name}.xml", job_config
-      end
-    end
-
-    private
-
-    def map_job_configs
-      Parallel.map(job_names_to_backup, in_threads: threads) do |job_name|
-        job_config = jenkins_client.job.get_config job_name
-        yield job_name, job_config
-      end
+    def xml_file_path(job_name)
+      "#{backup_dir}/#{job_name}.xml"
     end
   end
 end

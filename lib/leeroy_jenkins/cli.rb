@@ -6,15 +6,15 @@ module LeeroyJenkins
       true
     end
 
-    class_option :dry_run,              type: :boolean, default: true,   desc: 'Write XML to STDOUT instead of to Jenkins'
-    class_option :jenkins_log_level,    type: :numeric, default: 3,      desc: 'Detail of the messages logged by the Jenkins API client: DEBUG (0), INFO (1), WARN (2), FATAL (3)', enum: [0, 1, 2, 3]
-    class_option :jenkins_log_location, type: :string,  default: STDOUT, desc: 'Path to write messages logged by the Jenkins API client'
-    class_option :job_regex,            type: :string,  default: '.*',   desc: 'Regular expression to select jobs by name'
-    class_option :jobs,                 type: :string,                   desc: 'Path to a file containing a job name on each line'
-    class_option :password,             type: :string,                   desc: 'Override LEEROY_JENKINS_PASSWORD'
-    class_option :server_url,           type: :string,                   desc: 'Override LEEROY_JENKINS_SERVER_URL'
-    class_option :threads,              type: :numeric, default: 4,      desc: 'Number of threads to use for network and disk IO'
-    class_option :username,             type: :string,                   desc: 'Override LEEROY_JENKINS_USERNAME'
+    class_option :dry_run,              type: :boolean, default: true,          desc: 'Show what leeroy would do, without doing it'
+    class_option :jenkins_log_level,    type: :numeric, default: 3,             desc: 'Detail of the messages logged by the Jenkins API client: DEBUG (0), INFO (1), WARN (2), FATAL (3)', enum: [0, 1, 2, 3]
+    class_option :jenkins_log_location, type: :string,  default: '/dev/stdout', desc: 'Path to write messages logged by the Jenkins API client'
+    class_option :job_regex,            type: :string,  default: '.*',          desc: 'Regular expression to select jobs by name'
+    class_option :jobs,                 type: :string,                          desc: 'Path to a file containing a job name on each line'
+    class_option :password,             type: :string,                          desc: 'Override LEEROY_JENKINS_PASSWORD'
+    class_option :server_url,           type: :string,                          desc: 'Override LEEROY_JENKINS_SERVER_URL'
+    class_option :threads,              type: :numeric, default: 4,             desc: 'Number of threads to use for network and disk IO'
+    class_option :username,             type: :string,                          desc: 'Override LEEROY_JENKINS_USERNAME'
 
     desc 'append NEW_NODE.xml', 'Append to XML nodes in jenkins jobs\' config.xml'
     option :xpath, type: :string, default: '/', desc: 'XPath of node(s) to modify in the config.xml of the specified job(s)'
@@ -36,8 +36,7 @@ module LeeroyJenkins
 
     desc 'backup BACKUP_DIR_PATH', 'Save the config.xml of Jenkins jobs to disk, BACKUP_DIR created if it does not exist'
     def backup(backup_dir)
-      # TODO: dry_run
-      JobBackupper.new(job_names, jenkins_client, backup_dir, options[:threads]).backup
+      puts JobBackupper.new(job_names, jenkins_client, backup_dir, options[:threads]).backup(options[:dry_run])
     end
 
     desc 'restore BACKUP_DIR_PATH', 'Restore config.xml files to Jenkins jobs from backups'
