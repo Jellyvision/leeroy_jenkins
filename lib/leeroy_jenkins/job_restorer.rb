@@ -16,7 +16,7 @@ module LeeroyJenkins
         [job_name, File.read(xml_path)]
       end
 
-      Hash[pairs]
+      Result.new(Hash[pairs])
     end
 
     def restore!
@@ -30,7 +30,7 @@ module LeeroyJenkins
         [job_name, http_status_code]
       end
 
-      Hash[pairs]
+      Result.new(Hash[pairs])
     end
 
     private

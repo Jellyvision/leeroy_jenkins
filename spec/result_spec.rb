@@ -13,14 +13,21 @@ describe LeeroyJenkins::Result do
         end
 
         let(:expected) do
-          <<EOF
----
-- :job_name: job_1
-  :status_code: 200
-- :job_name: job_2
-  :status_code: 400
-- :job_name: job_3
-  :status_code: 403
+          <<EOF.chop
+[
+  {
+    "job_name": "job_1",
+    "status_code": 200
+  },
+  {
+    "job_name": "job_2",
+    "status_code": 400
+  },
+  {
+    "job_name": "job_3",
+    "status_code": 403
+  }
+]
 EOF
         end
 
@@ -40,14 +47,21 @@ EOF
         end
 
         let(:expected) do
-          <<EOF
----
-- :job_name: job_1
-  :new_xml: "<newXML>foo</newXML>"
-- :job_name: job_2
-  :new_xml: "<newXML>bar</newXML>"
-- :job_name: job_3
-  :new_xml: "<newXML>baz</newXML>"
+          <<EOF.chop
+[
+  {
+    "job_name": "job_1",
+    "new_xml": "<newXML>foo</newXML>"
+  },
+  {
+    "job_name": "job_2",
+    "new_xml": "<newXML>bar</newXML>"
+  },
+  {
+    "job_name": "job_3",
+    "new_xml": "<newXML>baz</newXML>"
+  }
+]
 EOF
         end
 
@@ -55,6 +69,24 @@ EOF
           actual = LeeroyJenkins::Result.new(result_hashes).to_s
           expect(actual).to eq(expected)
         end
+      end
+    end
+  end
+
+  describe '#==' do
+    context 'with the same result hash' do
+      it 'returns true' do
+        result_1 = LeeroyJenkins::Result.new([{ job_name: 'job_1', new_xml: '<newXML>foo</newXML>' }])
+        result_2 = LeeroyJenkins::Result.new([{ job_name: 'job_1', new_xml: '<newXML>foo</newXML>' }])
+        expect(result_1).to eq(result_2)
+      end
+    end
+
+    context 'with different result hashes' do
+      it 'returns false' do
+        result_1 = LeeroyJenkins::Result.new([{ job_name: 'job_1', new_xml: '<newXML>foo</newXML>' }])
+        result_2 = LeeroyJenkins::Result.new([{ job_name: 'job_2', new_xml: '<newXML>bar</newXML>' }])
+        expect(result_1).not_to eq(result_2)
       end
     end
   end

@@ -17,7 +17,7 @@ module LeeroyJenkins
     end
 
     def update_jobs(dry = true)
-      dry ? dry_run : update_jobs!
+      Result.new(dry ? dry_run : update_jobs!)
     end
 
     private

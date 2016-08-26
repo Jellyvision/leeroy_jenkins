@@ -5,10 +5,14 @@ module LeeroyJenkins
     end
 
     def to_s
-      result_hashes.to_yaml
+      JSON.pretty_generate(result_hashes)
     end
 
-    private
+    def ==(other)
+      other.class == self.class && result_hashes == other.result_hashes
+    end
+
+    protected
 
     attr_reader :result_hashes
   end

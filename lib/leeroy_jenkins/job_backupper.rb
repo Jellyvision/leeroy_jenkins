@@ -10,7 +10,7 @@ module LeeroyJenkins
     end
 
     def backup(dry = true)
-      dry ? dry_run : backup!
+      Result.new(dry ? dry_run : backup!)
     end
 
     private

@@ -8,7 +8,8 @@ describe LeeroyJenkins::JobUpdater do
   let(:current_xml) { '<x><y>current</y></x>' }
   let(:threads) { 4 }
 
-  let(:job_updater) { LeeroyJenkins::JobUpdater.new job_names, new_xml, jenkins_client, xpath, at_xpath, threads }
+  let(:job_updater) { LeeroyJenkins::JobUpdater.new(job_names, new_xml, jenkins_client, xpath, at_xpath, threads) }
+  let(:expected_result) { LeeroyJenkins::Result.new('job_1' => 200, 'job_2' => 200, 'job_3' => 200) }
 
   before do
     allow(job_client).to receive(:get_config).with(/job_\d/).and_return(current_xml)
@@ -24,14 +25,14 @@ describe LeeroyJenkins::JobUpdater do
           let(:xpath) { '/' }
           let(:constructed_xml) { new_xml }
 
-          it('overwrites the existing config.xml files') { expect(job_updater.update_jobs(false)).to eql('job_1' => 200, 'job_2' => 200, 'job_3' => 200) }
+          it('overwrites the existing config.xml files') { expect(job_updater.update_jobs(false)).to eq(expected_result) }
         end
 
         context 'xpath = "/x/y"' do
           let(:xpath) { '/x/y' }
           let(:constructed_xml) { '<x><a><b>new</b></a></x>' }
 
-          it('overwrites the specified XML nodes in the config.xml files') { expect(job_updater.update_jobs(false)).to eql('job_1' => 200, 'job_2' => 200, 'job_3' => 200) }
+          it('overwrites the specified XML nodes in the config.xml files') { expect(job_updater.update_jobs(false)).to eq(expected_result) }
         end
       end
 
@@ -42,14 +43,14 @@ describe LeeroyJenkins::JobUpdater do
           let(:xpath) { '/' }
           let(:constructed_xml) { '<x><y>current</y><a><b>new</b></a></x>' }
 
-          it('appends to the root elements') { expect(job_updater.update_jobs(false)).to eql('job_1' => 200, 'job_2' => 200, 'job_3' => 200) }
+          it('appends to the root elements') { expect(job_updater.update_jobs(false)).to eq(expected_result) }
         end
 
         context 'xpath = "/x/y"' do
           let(:xpath) { '/x/y' }
           let(:constructed_xml) { '<x><y>current<a><b>new</b></a></y></x>' }
 
-          it('appends to the specified nodes in the config.xml files') { expect(job_updater.update_jobs(false)).to eql('job_1' => 200, 'job_2' => 200, 'job_3' => 200) }
+          it('appends to the specified nodes in the config.xml files') { expect(job_updater.update_jobs(false)).to eq(expected_result) }
         end
       end
 
@@ -60,14 +61,14 @@ describe LeeroyJenkins::JobUpdater do
           let(:xpath) { '/' }
           let(:constructed_xml) { '' }
 
-          it('deletes the root element of the specified jobs') { expect(job_updater.update_jobs(false)).to eql('job_1' => 200, 'job_2' => 200, 'job_3' => 200) }
+          it('deletes the root element of the specified jobs') { expect(job_updater.update_jobs(false)).to eq(expected_result) }
         end
 
         context 'xpath = "/x/y"' do
           let(:xpath) { '/x/y' }
           let(:constructed_xml) { '<x></x>' }
 
-          it('deletes the specified nodes in the config.xml files') { expect(job_updater.update_jobs(false)).to eql('job_1' => 200, 'job_2' => 200, 'job_3' => 200) }
+          it('deletes the specified nodes in the config.xml files') { expect(job_updater.update_jobs(false)).to eq(expected_result) }
         end
       end
     end
@@ -75,13 +76,14 @@ describe LeeroyJenkins::JobUpdater do
     context 'dry = true' do
       context 'at_xpath = :replace' do
         let(:at_xpath) { :replace }
+        let(:expected_result) { LeeroyJenkins::Result.new('job_1' => constructed_xml, 'job_2' => constructed_xml, 'job_3' => constructed_xml) }
 
         context 'xpath = "x/y"' do
           let(:xpath) { '/x/y' }
           let(:constructed_xml) { '<x><a><b>new</b></a></x>' }
 
           it 'returns a hash of job names and what their new config.xml would look like' do
-            expect(job_updater.update_jobs(true)).to eql('job_1' => constructed_xml, 'job_2' => constructed_xml, 'job_3' => constructed_xml)
+            expect(job_updater.update_jobs(true)).to eq(expected_result)
           end
         end
       end

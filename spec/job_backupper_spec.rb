@@ -41,8 +41,16 @@ describe LeeroyJenkins::JobBackupper do
   end
 
   context 'dry_run = true' do
+    let(:expected_result) do
+      LeeroyJenkins::Result.new(
+        'job_1' => "#{backup_dir}/job_1.xml",
+        'job_2' => "#{backup_dir}/job_2.xml",
+        'job_3' => "#{backup_dir}/job_3.xml"
+      )
+    end
+
     it 'returns the XML files that would be written for each job' do
-      expect(job_backupper.backup(true)).to eq('job_1' => "#{backup_dir}/job_1.xml", 'job_2' => "#{backup_dir}/job_2.xml", 'job_3' => "#{backup_dir}/job_3.xml")
+      expect(job_backupper.backup(true)).to eq(expected_result)
     end
   end
 end
