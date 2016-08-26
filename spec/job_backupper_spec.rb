@@ -10,6 +10,13 @@ describe LeeroyJenkins::JobBackupper do
   let(:backup_dir) { 'path/to/backups' }
   let(:threads) { 4 }
   let(:job_backupper) { LeeroyJenkins::JobBackupper.new(job_names, jenkins_client, backup_dir, threads) }
+  let(:expected_result) do
+    LeeroyJenkins::Result.new(
+      'job_1' => "#{backup_dir}/job_1.xml",
+      'job_2' => "#{backup_dir}/job_2.xml",
+      'job_3' => "#{backup_dir}/job_3.xml"
+    )
+  end
 
   describe '#backup' do
     context 'dry_run = false' do
@@ -27,28 +34,20 @@ describe LeeroyJenkins::JobBackupper do
         it 'creates that directory and writes the XML configs for the specified jobs to it' do
           allow(Dir).to receive(:exist?).with(backup_dir).and_return(false)
           expect(FileUtils).to receive(:mkdir_p).with(backup_dir)
-          job_backupper.backup(false)
+          expect(job_backupper.backup(false)).to eq(expected_result)
         end
       end
 
       context 'backup_dir exists' do
         it 'writes the XML configs for the specified jobs to it' do
           allow(Dir).to receive(:exists?).with(backup_dir).and_return(true)
-          job_backupper.backup(false)
+          expect(job_backupper.backup(false)).to eq(expected_result)
         end
       end
     end
   end
 
   context 'dry_run = true' do
-    let(:expected_result) do
-      LeeroyJenkins::Result.new(
-        'job_1' => "#{backup_dir}/job_1.xml",
-        'job_2' => "#{backup_dir}/job_2.xml",
-        'job_3' => "#{backup_dir}/job_3.xml"
-      )
-    end
-
     it 'returns the XML files that would be written for each job' do
       expect(job_backupper.backup(true)).to eq(expected_result)
     end

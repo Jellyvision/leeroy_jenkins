@@ -18,10 +18,14 @@ module LeeroyJenkins
     def backup!
       FileUtils.mkdir_p(backup_dir) unless Dir.exist?(backup_dir)
 
-      Parallel.each(job_names_to_backup, in_threads: threads) do |job_name|
+      pairs = Parallel.map(job_names_to_backup, in_threads: threads) do |job_name|
         job_config = jenkins_client.job.get_config(job_name)
-        File.write(xml_file_path(job_name), job_config)
+        path = xml_file_path(job_name)
+        File.write(path, job_config)
+        [job_name, path]
       end
+
+      Hash[pairs]
     end
 
     def dry_run
