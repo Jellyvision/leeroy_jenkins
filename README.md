@@ -21,7 +21,7 @@ Or install it yourself as:
 
 ## Usage
 
-Set your `LEEROY_JENKINS_USERNAME`, `LEEROY_JENKINS_PASSWORD`, and `LEEROY_JENKINS_SERVER_URL` appropriately for your Jenkins. These can also be overridden with command line options. Run `leeroy --help` to see the available sub-commands and options
+Set your `LEEROY_JENKINS_USERNAME`, `LEEROY_JENKINS_PASSWORD`, and `LEEROY_JENKINS_SERVER_URL` appropriately for your Jenkins. These can also be overridden with command line options. Run `leeroy --help` to see the available sub-commands and options:
 
     $ leeroy --help
     Commands:
@@ -51,7 +51,6 @@ Set your `LEEROY_JENKINS_USERNAME`, `LEEROY_JENKINS_PASSWORD`, and `LEEROY_JENKI
 
 ## Development
 
-After checking out the repo, run `bundle install` to install dependencies. Then, run `bundle exec rake rspec` to run the unit tests. Run `bundle exec rake rubocop` to lint. You can also run `bundle exec bin/console` for an interactive prompt that will allow you to experiment. Run `bundle exec exe/leeroy` to use the gem in this directory, ignoring other installed copies of this gem.
+After checking out the repo, run `bundle install` to install dependencies. Then, run `bundle exec rake rspec` to run the unit tests. Run `bundle exec rake rubocop` to lint. You can also run `bundle exec bin/console` to launch a pry session with all code and dependencies loaded. Run `bundle exec exe/leeroy` to use the gem in this directory, ignoring other installed copies of this gem.
 
 To run the acceptance tests, run `vagrant up` to start your own Jenkins instance. This may take 5-10 minutes, but when finished you'll be able to access Jenkins at `192.168.50.33:8080` in your web browser. Then run `bundle exec rake cucumber`. `bundle exec rake verify` will lint, run unit tests, and run acceptance tests. This is also the default rake task.
-
