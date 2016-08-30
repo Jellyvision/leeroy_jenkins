@@ -1,0 +1,24 @@
+inherit_from: .rubocop_todo.yml
+
+Style/WordArray:
+  Enabled: false
+
+Style/HashSyntax:
+  Exclude:
+    - 'Rakefile'
+
+Metrics/LineLength:
+  Exclude:
+    - 'lib/leeroy_jenkins/cli.rb'
+
+Metrics/AbcSize:
+  Max: 25
+
+Metrics/MethodLength:
+  Max: 20
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/ParameterLists:
+  Max: 6

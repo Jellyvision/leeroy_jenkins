@@ -6,10 +6,10 @@ module LeeroyJenkins
       @jenkins_client = jenkins_client
     end
 
-    def find_jobs(regex, job_names = nil)
+    def find_jobs(regex, job_names = [])
       jobs_matching_regex = jenkins_client.job.list(regex)
 
-      if job_names
+      if job_names.any?
         jobs_matching_regex.select do |job|
           job_names.include? job
         end
