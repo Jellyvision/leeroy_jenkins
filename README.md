@@ -21,7 +21,7 @@ Or install it yourself as:
 
 ## Usage
 
-Set your `LEEROY_JENKINS_USERNAME`, `LEEROY_JENKINS_PASSWORD`, and `LEEROY_JENKINS_SERVER_URL` appropriately for your Jenkins. These can also be overridden with command line options. Run `leeroy --help` to see the available sub-commands and options:
+Set your `LEEROY_JENKINS_USERNAME`, `LEEROY_JENKINS_PASSWORD`, and `LEEROY_JENKINS_SERVER_URL` environment variables appropriately for your Jenkins. These can also be overridden with command line options. Run `leeroy --help` to see the available sub-commands and options:
 
     $ leeroy --help
     Commands:
@@ -48,6 +48,14 @@ Set your `LEEROY_JENKINS_USERNAME`, `LEEROY_JENKINS_PASSWORD`, and `LEEROY_JENKI
       [--threads=N]                                  # Number of threads to use for network and disk IO
                                                      # Default: 4
       [--username=USERNAME]                          # Override LEEROY_JENKINS_USERNAME
+
+For more specific examples and documentation of features, take a look in the `features` directory (the fixtures referenced there are [here](https://github.com/Jellyvision/leeroy_jenkins/tree/master/features/fixtures)):
+
+* [append](https://github.com/Jellyvision/leeroy_jenkins/blob/master/features/append.feature)
+* [backup](https://github.com/Jellyvision/leeroy_jenkins/blob/master/features/backup.feature)
+* [delete](https://github.com/Jellyvision/leeroy_jenkins/blob/master/features/delete.feature)
+* [replace](https://github.com/Jellyvision/leeroy_jenkins/blob/master/features/replace.feature)
+* [restore](https://github.com/Jellyvision/leeroy_jenkins/blob/master/features/restore.feature)
 
 ## Development
 
