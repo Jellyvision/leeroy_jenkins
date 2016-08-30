@@ -1,4 +1,5 @@
 module LeeroyJenkins
+  # TODO: this isn't what a builder is
   class JenkinsClientBuilder
     attr_reader :server_url, :username, :password, :log_level, :log_location
 

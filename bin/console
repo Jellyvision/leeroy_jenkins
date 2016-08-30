@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require "bundler/setup"
-require "leeroy_jenkins"
+require 'bundler/setup'
+require 'leeroy_jenkins'
 
-require "pry"
+require 'pry'
 Pry.start

@@ -20,12 +20,12 @@ describe LeeroyJenkins::JenkinsClientBuilder do
 
       it 'builds a jenkins client based on those settings' do
         allow(JenkinsApi::Client).to receive(:new).with(
-                                       server_url: server_url,
-                                       username: username,
-                                       password: password,
-                                       log_level: log_level,
-                                       log_location: log_location
-                                     ).and_return(jenkins_client)
+          server_url: server_url,
+          username: username,
+          password: password,
+          log_level: log_level,
+          log_location: log_location
+        ).and_return(jenkins_client)
 
         expect(jenkins_client_builder.build).to eql(jenkins_client)
       end
@@ -42,12 +42,12 @@ describe LeeroyJenkins::JenkinsClientBuilder do
 
       it 'builds a jenkins client based on those settings' do
         allow(JenkinsApi::Client).to receive(:new).with(
-                                       server_url: env_server_url,
-                                       username: env_username,
-                                       password: env_password,
-                                       log_level: log_level,
-                                       log_location: log_location
-                                     ).and_return(jenkins_client)
+          server_url: env_server_url,
+          username: env_username,
+          password: env_password,
+          log_level: log_level,
+          log_location: log_location
+        ).and_return(jenkins_client)
 
         expect(jenkins_client_builder.build).to eql(jenkins_client)
       end

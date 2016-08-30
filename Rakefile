@@ -1,6 +1,21 @@
-require "bundler/gem_tasks"
-require "rspec/core/rake_task"
+require 'bundler/gem_tasks'
 
-RSpec::Core::RakeTask.new(:spec)
+desc 'Lint, run unit tests, and run acceptance tests.'
+task :verify => [:rubocop, :rspec, :cucumber]
 
-task :default => :spec
+desc 'Lint.'
+task :rubocop do
+  sh 'bundle exec rubocop'
+end
+
+desc 'Run unit tests.'
+task :rspec do
+  sh 'bundle exec rspec'
+end
+
+desc 'Run acceptance tests.'
+task :cucumber do
+  sh 'bundle exec cucumber'
+end
+
+task :default => :verify

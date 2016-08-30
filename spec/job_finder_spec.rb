@@ -4,8 +4,8 @@ describe LeeroyJenkins::JobFinder do
   let(:regex) { '.*' }
   let(:jenkins_client) { instance_double JenkinsApi::Client, job: job_client }
   let(:job_client) { instance_double JenkinsApi::Client::Job }
-  let(:all_jobs) { %w(job_1 job_2 job_3) }
-  let(:some_jobs) { %w(job_1 job_2) }
+  let(:all_jobs) { ['job_1', 'job_2', 'job_3'] }
+  let(:some_jobs) { ['job_1', 'job_2'] }
 
   let(:job_finder) { LeeroyJenkins::JobFinder.new(jenkins_client) }
 
