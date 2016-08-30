@@ -1,5 +1,7 @@
 # leeroy_jenkins
 
+[![Gem](https://img.shields.io/gem/v/leeroy_jenkins.svg)](https://rubygems.org/gems/leeroy_jenkins)
+
 ## Description
 A CLI tool for managing Jenkins job configurations: bulk update, backup, and restore your Jenkins job configurations
 
